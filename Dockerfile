@@ -18,31 +18,31 @@
 ######################################################################
 # Node stage to deal with static asset construction
 ######################################################################
-ARG PY_VER=3.8.16-slim
+# ARG PY_VER=3.8.16-slim
 
-# if BUILDPLATFORM is null, set it to 'amd64' (or leave as is otherwise).
-ARG BUILDPLATFORM=${BUILDPLATFORM:-amd64}
-FROM --platform=${BUILDPLATFORM} node:16-slim AS superset-node
+# # if BUILDPLATFORM is null, set it to 'amd64' (or leave as is otherwise).
+# ARG BUILDPLATFORM=${BUILDPLATFORM:-amd64}
+# FROM --platform=${BUILDPLATFORM} node:16-slim AS superset-node
 
-ARG NPM_BUILD_CMD="build"
-ENV BUILD_CMD=${NPM_BUILD_CMD}
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+# ARG NPM_BUILD_CMD="build"
+# ENV BUILD_CMD=${NPM_BUILD_CMD}
+# ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 
-# NPM ci first, as to NOT invalidate previous steps except for when package.json changes
-RUN mkdir -p /app/superset-frontend
+# # NPM ci first, as to NOT invalidate previous steps except for when package.json changes
+# RUN mkdir -p /app/superset-frontend
 
-COPY ./docker/frontend-mem-nag.sh /
-RUN /frontend-mem-nag.sh
+# COPY ./docker/frontend-mem-nag.sh /
+# RUN /frontend-mem-nag.sh
 
-WORKDIR /app/superset-frontend/
+# WORKDIR /app/superset-frontend/
 
-COPY superset-frontend/package*.json ./
-RUN npm ci
+# COPY superset-frontend/package*.json ./
+# RUN npm ci
 
-COPY ./superset-frontend .
+# COPY ./superset-frontend .
 
-# This seems to be the most expensive step
-RUN npm run ${BUILD_CMD}
+# # This seems to be the most expensive step
+# RUN npm run ${BUILD_CMD}
 
 ######################################################################
 # Final lean image...
